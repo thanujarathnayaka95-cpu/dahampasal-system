@@ -35,7 +35,9 @@ async function getDbData() {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    const dbData = await getDbData();
+    const schoolOptions = Object.keys(dbData.schools || {}).map(name => `<option value="${name}">${name}</option>`).join('');
     res.send(`
     <!DOCTYPE html>
     <html lang="si">
@@ -96,12 +98,12 @@ app.get('/', (req, res) => {
             </form>
         </div>
 
-        <div class="school-selector-box">
-            <label style="font-size: 16px; color: #9c7c38; font-weight: 700; margin-bottom: 8px;">🏫 කරුණාකර පළමුව ඔබේ දහම් පාසල තෝරන්න:</label>
-            <select id="globalSchoolSelect" onchange="selectSchool(this.value)">
-                <option value="">-- දහම් පාසල තෝරන්න --</option>
-            </select>
-        </div>
+   <label style="font-size: 16px; color: #9c7c38; font-weight: 700; margin-bottom: 8px;">කරුණාකර පළමුව ඔබේ දහම් පාසල තෝරන්න:</label>
+        <select id="globalSchoolSelect" onchange="selectSchool(this.value)">
+            <option value="">-- දහම් පාසල තෝරන්න --</option>
+            ${schoolOptions}
+        </select>
+</div>
 
         <div id="schoolManagementArea" style="display:none;">
             <div class="tabs">
